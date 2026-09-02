@@ -51,4 +51,5 @@ sysinfo.txt
 /[Pp]ackages/[Pp]ackage-lock.json
 
 # 付费第三方资产（需使用者自行从 Asset Store 导入）
-/Assets/Plugins/Sirenix/
+/Assets/Plugins/
+/Assets/Plugins.meta
