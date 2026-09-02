@@ -1,0 +1,65 @@
+﻿classDiagram
+    direction LR
+
+    class ResManager {
+        资源加载缓存（单例）
+        +Load~T~(path) T
+        +LoadAsync~T~(path, callBack) void
+        +UnloadAsset~T~(path, isDel, callBack) void
+        +UnloadUnusedAssets(callBack) void
+        +ClearDic(callBack) void
+        +GetRefCount~T~(path) int
+    }
+    class ResInfoBase {
+        <<abstract>> 资源记录基类
+        +path / typeName / refCount / state
+    }
+    class ResInfoT {
+        资源记录（T : Object）
+        +asset T
+        +callBack UnityAction~T~
+        +AddRefCount() / SubRefCount()
+    }
+    class AudioManager {
+        音乐 + 音效管理（单例）
+        +PlayBKMusic(name, isSync)
+        +StopBKMusic() / PauseBKMusic()
+        +ChangeBKMusicValue(v)
+        +PlaySound(name, isLoop)
+        +PlaySoundAsync(name, isLoop, callBack)
+        +StopSound(source)
+        +ChangeSoundValue(v)
+        +PlayOrPauseSound(isPlay)
+        +ClearSound()
+    }
+    class SoundObj {
+        MonoBehaviour + [Pool(100)]
+        +Awake() 补 AudioSource
+    }
+    class AudioSetting {
+        <<Serializable>> 音量设置
+        +bkMusicValue float
+        +soundValue float
+    }
+    class MonoManager {
+        帧事件广播 + 协程宿主
+        +Add/Remove(Update|FixedUpdate|LateUpdate)Listener(action)
+    }
+    class SaveManager {
+        存档（音量持久化用）
+    }
+    class PoolManager {
+        对象池（音效实例）
+    }
+
+    ResInfoBase <|-- ResInfoT
+    ResManager *-- ResInfoBase : 缓存字典
+    AudioManager ..> ResManager : 加载/卸载 AudioClip
+    AudioManager ..> PoolManager : 取/还 SoundObj
+    AudioManager ..> MonoManager : 每帧清扫
+    AudioManager ..> SaveManager : 读写 AudioSetting
+    AudioManager ..> SoundObj : 池化实例
+    AudioManager *-- AudioSetting : 音量来源
+    ResManager ..> MonoManager : 协程
+
+    note for AudioManager "音效播放流程：取池化 SoundObj → 设 clip 播放 → 播放完卸载资源并回池；BGM 的 AudioSource 挂在常驻 GameObject 上"

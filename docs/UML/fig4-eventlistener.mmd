@@ -1,0 +1,33 @@
+﻿classDiagram
+    direction LR
+
+    class EventListenerType {
+        <<enumeration>> 组件事件类型
+        鼠标/拖拽 8 种 + 碰撞 6 种 + 触发 6 种
+    }
+    class EventListener {
+        MonoBehaviour 组件级监听
+        +AddListener~T~(type, action, args)
+        +RemoveListener~T~(type, action, ...)
+        +RemoveAllListener(type) / ()
+        +TriggerAction~T~(type, eventData)
+        +OnPointerEnter/Exit/Click/Down/Up(...)
+        +OnBeginDrag/OnDrag/OnEndDrag(...)
+        内部：碰撞/触发回调 → 转发
+    }
+    class IMouseEvent {
+        <<interface>> 聚合指针/拖拽接口
+    }
+    class EventListenerExtension {
+        <<static>> 强类型注册入口
+        +OnClick / OnMouseEnter / OnDrag ...（this Component）
+        +OnCollisionEnter... / OnTriggerEnter...
+        +RemoveClick / Remove... / RemoveAllListener
+    }
+
+    IMouseEvent <|.. EventListener : 实现
+    EventListener ..> EventListenerType
+    EventListenerExtension ..> EventListener : 获取并自动挂载
+    EventListenerExtension ..> EventListenerType
+
+    note for EventListener "一条监听 = 委托 + 附加参数 object[]；指针/碰撞/触发回调统一转 TriggerAction 分发"

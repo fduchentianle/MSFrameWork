@@ -1,0 +1,35 @@
+﻿classDiagram
+    direction LR
+
+    class MonoBehaviour {
+        「外部」UnityEngine.MonoBehaviour
+    }
+    class BaseManagerT {
+        纯 C# 单例基类（T : class）
+        +Instance$ T（双检锁 + 反射私有构造）
+    }
+    class SingletonMonoT {
+        MonoBehaviour 单例（手动挂载）
+        +Instance$ T
+        #Awake() 去重 + DontDestroyOnLoad
+    }
+    class SingletonAutoMonoT {
+        MonoBehaviour 单例（自动挂载，推荐）
+        +Instance$ T（首次访问 new GameObject + AddComponent）
+    }
+
+    MonoBehaviour <|-- SingletonMonoT
+    MonoBehaviour <|-- SingletonAutoMonoT
+
+    BaseManagerT <|-- PoolManager
+    BaseManagerT <|-- EventCenter
+    BaseManagerT <|-- ConfigManager
+    BaseManagerT <|-- SaveManager
+    BaseManagerT <|-- ChangeSceneManager
+    BaseManagerT <|-- ResManager
+    BaseManagerT <|-- AudioManager
+    BaseManagerT <|-- TimerManager
+    BaseManagerT <|-- UIManager
+    SingletonAutoMonoT <|-- MonoManager
+
+    note for SingletonMonoT "手动挂场景版当前无使用方，保留作扩展用"

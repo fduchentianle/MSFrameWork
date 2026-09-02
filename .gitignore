@@ -1,0 +1,51 @@
+# ===== Unity 项目 .gitignore =====
+# 只提交源码与配置，忽略引擎生成的缓存/产物
+
+# Unity 生成的大目录
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# IDE 与工具
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userprefs
+
+# Unity 自动生成的 IDE 工程文件（可随时由 Unity 重建）
+*.csproj
+*.unityproj
+*.sln
+*.booproj
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# 崩溃/系统信息
+sysinfo.txt
+
+# 构建产物
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# 本地辅助脚本（非框架内容，按需自行取消忽略）
+/dshtools/
+
+# 包锁定文件（由 Unity 打开工程时自动生成）
+/[Pp]ackages/[Pp]ackages-lock.json
+/[Pp]ackages/[Pp]ackage-lock.json

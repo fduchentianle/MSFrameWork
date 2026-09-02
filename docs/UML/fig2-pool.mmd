@@ -1,0 +1,55 @@
+﻿classDiagram
+    direction LR
+
+    class PoolManager {
+        对象池总入口
+        +GetGameObj~T~(name) T
+        +GetGameObjAsync~T~(name, callBack) void
+        +GetObj~T~() T
+        +PushGameObj(GameObject) void
+        +PushObj~T~(T) void
+        +ClearPool() void
+    }
+    class PoolGameObject {
+        某个资源名的 GameObject 抽屉
+        +Count int
+        +Pop() GameObject
+        +Push(GameObject) void
+    }
+    class PoolObjectBase {
+        <<abstract>> 普通对象抽屉基类
+    }
+    class PoolObjectT {
+        普通对象抽屉（T : class）
+        +poolObjs Queue~T~
+        +maxNum int
+        +Count int
+    }
+    class PoolAttribute {
+        <<attribute>> 标容量上限
+        +maxNum int
+    }
+    class IPoolObject {
+        <<interface>> 归还前重置
+        +ResetInfo() void
+    }
+    class SoundObj {
+        「入池对象示例」MonoBehaviour
+    }
+    class StateMachine {
+        「入池对象示例」IPoolObject
+    }
+    class TimerItem {
+        「入池对象示例」IPoolObject
+    }
+
+    PoolManager *-- PoolGameObject : 持有(按名)
+    PoolManager *-- PoolObjectBase : 持有(按类型)
+    PoolObjectBase <|-- PoolObjectT
+    PoolManager ..> PoolAttribute : 反射读容量
+    IPoolObject <.. PoolObjectT : 约束
+    IPoolObject <|.. StateMachine : 实现
+    IPoolObject <|.. TimerItem : 实现
+    PoolManager ..> SoundObj : 池化实例
+
+    note for PoolManager "GetGameObj 池空时经 ResManager 加载预制体；PushGameObj 归还时清理其 EventListener；普通对象池空时 new T() 兜底"

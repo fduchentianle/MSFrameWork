@@ -1,0 +1,40 @@
+﻿classDiagram
+    direction LR
+
+    class UIManager {
+        面板管理器（单例，非 Mono）
+        +ShowPanel~T~(layer, callBack)
+        +ShowPanelAsync~T~(layer, callBack)
+        +HidePanel~T~(isDestroy)
+        +GetPanel~T~(callBack)
+        +GetLayerFather(layer)
+        内部：panelDic + 四层遮罩
+    }
+    class BasePanel {
+        <<abstract>> MonoBehaviour 面板基类
+        +GetControl~T~(name) T
+        +ShowMe() / HideMe()（抽象，子类实现）
+        #Awake() 扫控件 + 接事件
+        #ClickBtn(name) 钩子
+        #SliderValueChange(name, v) 钩子
+        #ToggleValueChanged(name, v) 钩子
+    }
+    class E_UILayer {
+        <<enumeration>> UI 层级
+        +Bottom / Middle / Top / System
+    }
+    class BasePanelInfo {
+        <<abstract>> 面板登记信息基类（私有嵌套）
+    }
+    class PanelInfoT {
+        面板登记信息（私有嵌套）
+        +panel T / +callBack / +isHide
+    }
+
+    UIManager ..> BasePanel : 加载并调用 ShowMe/HideMe
+    UIManager ..> E_UILayer : 按层放置
+    UIManager *-- BasePanelInfo : panelDic
+    BasePanelInfo <|-- PanelInfoT
+
+    note for UIManager "面板预制体约定 Resources/UI/面板类型名，且须挂对应 BasePanel 子类脚本"
+    note for BasePanel "控件按 GameObject.name 注册；Button/Slider/Toggle 事件在 Awake 自动接线，子类 override 钩子即可"

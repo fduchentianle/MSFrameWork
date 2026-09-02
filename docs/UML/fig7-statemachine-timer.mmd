@@ -1,0 +1,41 @@
+﻿classDiagram
+    direction LR
+
+    class StateMachine {
+        [Pool(100)] 状态控制器
+        +CurrentStateNum int
+        +Init(owner)
+        +ChangeState~T~(newStateNum, reCurrentState) bool
+        +Stop() / Destroy() / ResetInfo()
+    }
+    class StateBase {
+        <<abstract>> [Pool(100)] 状态基类
+        +Init(owner, machine)
+        +UnInit() / ResetInfo()
+        +Enter() / Exit()
+        +FixedUpdate() / Update() / LateUpdate()
+    }
+    class IStateMachineOwner {
+        <<interface>> 宿主标记
+    }
+    class TimerManager {
+        定时器管理（单例）
+        +CreateTimer(allTime, overCallBack, intervalTime, callBack) int
+        +CreateRealTimer(...) int
+        +Remove/Reset/Start/Stop Timer(keyID)
+        +StartTimer() / StartRealTimer() / StopAllTimer()
+    }
+    class TimerItem {
+        [Pool(100)] 单个定时器
+        +keyID / allTime / intervalTime / isRunning
+        +overCallBack / callBack UnityAction
+        +InitInfo(...) / ResetInfo()
+    }
+
+    IStateMachineOwner <.. StateMachine : 宿主
+    StateMachine *-- StateBase : stateDic
+    StateMachine ..> StateBase : ChangeState~T~
+    TimerManager *-- TimerItem : 两个字典
+
+    note for StateMachine "切换 = 旧状态 Exit+摘帧监听 → 新状态 Enter+挂帧监听；状态从对象池/字典复用"
+    note for TimerManager "10Hz 心跳协程驱动；timerDic 受 timeScale 影响，realTimerDic 不受"

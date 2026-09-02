@@ -1,0 +1,53 @@
+﻿flowchart LR
+    subgraph USAGE["使用层（业务/组件）"]
+        UI["UI 系统：UIManager + BasePanel"]
+        COMP["组件：EventListener / StateMachine / TimerManager"]
+    end
+
+    subgraph SERVICE["服务层（核心枢纽）"]
+        ResM["ResManager\n资源加载缓存"]
+        AudioM["AudioManager\n音乐音效"]
+        MonoM["MonoManager\n帧事件 + 协程宿主"]
+        PoolM["PoolManager\n对象池"]
+    end
+
+    subgraph SYS["系统层"]
+        EventC["EventCenter\n全局事件"]
+        ConfigM["ConfigManager\n配置读取"]
+        SaveM["SaveManager\n存档"]
+        SceneM["ChangeSceneManager\n切场景"]
+    end
+
+    subgraph BASE["基础层"]
+        Singleton["单例基类 ×3"]
+        Ext["Extension\n扩展方法门面"]
+    end
+
+    MonoM -.继承.-> Singleton
+    ResM -.继承.-> Singleton
+    AudioM -.继承.-> Singleton
+    PoolM -.继承.-> Singleton
+    EventC -.继承.-> Singleton
+    ConfigM -.继承.-> Singleton
+    SaveM -.继承.-> Singleton
+    SceneM -.继承.-> Singleton
+
+    UI --> ResM : 加载面板预制体
+    UI --> EventC : 业务事件
+    COMP --> MonoM : 帧驱动/协程
+    COMP --> PoolM : 取还对象
+    AudioM --> ResM : 加载 AudioClip
+    AudioM --> PoolM : 音效实例池
+    AudioM --> MonoM : 每帧清扫
+    AudioM --> SaveM : 音量设置
+    SceneM --> MonoM : 协程
+    SceneM --> EventC : 进度事件
+    ConfigM --> ResM : 加载配置资产
+    PoolM --> ResM : 加载预制体
+    MonoM --> Ext : 转发
+    PoolM --> Ext : 转发
+
+    style BASE fill:#e8f0fe,stroke:#8ab4f8
+    style SYS fill:#e6f4ea,stroke:#81c995
+    style SERVICE fill:#fef7e0,stroke:#fdd663
+    style USAGE fill:#f3e8fd,stroke:#d7aefb

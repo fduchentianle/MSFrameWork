@@ -1,0 +1,27 @@
+﻿classDiagram
+    direction LR
+
+    class MathUtil {
+        静态工具（全 static）
+        +Deg2Rad / Rad2Deg
+        +GetObjDistanceXZ / XY
+        +CheckObjDistanceXZ / XY
+        +IsWorldPosOutScreen
+        +IsInSectorRangeXZ
+        +RayCast / RayCastAll
+        +OverlapBox~T~ / OverlapSphere~T~
+    }
+    class RuntimeMonitor {
+        <<ScriptableObject>> 编辑器监视器
+        +autoRefresh bool
+        监视：池配置 / 资源缓存 / 全局事件 / 组件事件
+    }
+    class EditorDebugInfo {
+        <<Serializable>> 行数据模型
+        ResCacheDebugInfo / PoolConfigDebugInfo
+        EventCenterDebugInfo / EventListenerDebugInfo
+    }
+
+    RuntimeMonitor ..> EditorDebugInfo : 生成表格行
+
+    note for RuntimeMonitor "整个文件包在 #if UNITY_EDITOR 内，只影响编辑器，不进运行时包体"

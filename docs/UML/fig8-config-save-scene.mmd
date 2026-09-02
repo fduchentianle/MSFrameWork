@@ -1,0 +1,48 @@
+﻿classDiagram
+    direction LR
+
+    class ConfigManager {
+        配置读取（单例）
+        +GetConfig~T~(configTypeName, id) T
+    }
+    class ConfigSetting {
+        「外部」Odin SerializedScriptableObject
+        +configDict Dictionary(string, Dictionary(int, ConfigBase))
+        +GetConfig~T~(name, id) T
+    }
+    class ConfigBase {
+        「外部」Odin SerializedScriptableObject
+        配置数据基类
+    }
+    class SaveManager {
+        存档管理（单例）
+        +SaveObject / LoadObject~T~
+        +SaveSetting / LoadSetting~T~
+        +CreateSaveItem / GetSaveItem / DeleteSaveItem
+        +GetAllSaveItem(...)
+    }
+    class SaveItem {
+        存档槽
+        +saveID / +lastSaveTime
+        +UpdateTime(DateTime)
+    }
+    class ChangeSceneManager {
+        场景切换（单例）
+        +LoadScene(name, callBack)
+        +LoadSceneAsync(name, callBack)
+    }
+    class ResManager {
+        资源加载
+    }
+    class MonoManager {
+        协程
+    }
+    class EventCenter {
+        全局事件
+    }
+
+    ConfigManager ..> ResManager : 加载 ConfigSetting
+    ConfigSetting *-- ConfigBase : configDict
+    SaveManager *-- SaveItem : 存档清单
+    ChangeSceneManager ..> MonoManager : 协程
+    ChangeSceneManager ..> EventCenter : 进度 E_SceneLoadChange

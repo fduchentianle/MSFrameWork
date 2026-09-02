@@ -1,0 +1,42 @@
+﻿classDiagram
+    direction LR
+
+    class EventType {
+        <<enumeration>> 全局事件类型
+        +E_SceneLoadChange 0
+    }
+    class EventCenter {
+        全局事件中心（单例）
+        +AddEventListener(type, action) 及 1/2/3 参重载
+        +RemoveEventListener(...) 及 1/2/3 参重载
+        +EventTrigger(type) 及 1/2/3 参重载
+        +Clear() / Clear(EventType)
+    }
+    class EventInfoBase {
+        <<abstract>> 父类装子类
+    }
+    class EventInfo {
+        无参事件
+        +actions UnityAction
+    }
+    class EventInfoT {
+        一参事件
+        +actions UnityAction~T~
+    }
+    class EventInfoTK {
+        两参事件
+        +actions UnityAction~T,K~
+    }
+    class EventInfoTKL {
+        三参事件
+        +actions UnityAction~T,K,L~
+    }
+
+    EventInfoBase <|-- EventInfo
+    EventInfoBase <|-- EventInfoT
+    EventInfoBase <|-- EventInfoTK
+    EventInfoBase <|-- EventInfoTKL
+    EventCenter *-- EventInfoBase : eventDic
+    EventCenter ..> EventType : 事件键
+
+    note for EventCenter "同一 EventType 的委托参数个数必须固定，混用会强转失败（源码注释已提醒）"
