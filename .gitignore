@@ -49,3 +49,6 @@ sysinfo.txt
 # 包锁定文件（由 Unity 打开工程时自动生成）
 /[Pp]ackages/[Pp]ackages-lock.json
 /[Pp]ackages/[Pp]ackage-lock.json
+
+# 付费第三方资产（需使用者自行从 Asset Store 导入）
+/Assets/Plugins/Sirenix/
